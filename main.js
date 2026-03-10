@@ -19388,7 +19388,7 @@ void main(void) {
                         let p = Number(r.x), m = Number(r.y), g = this.getGameScale(), x = new Cs.Vector2(this.windX, this.windY);
                         x.scale(g);
                         
-                        // هنا السر: نضيف الرياح للحساب المحلي ليتطابق مع السيرفر وتجنب التعليق
+                        
                         p += x.x; 
                         m += x.y;
 
@@ -21827,9 +21827,7 @@ void main(void) {
     function zA(i, t) {
         !I.canShoot() || Q !== 4 || ig(i, t, !0)
     }
-    function jA() {
-        I.canShoot() && (Q === 3 ? (N.actions.clear(), mh()) : Q === 4 && og())
-    }
+function jA() { I.canShoot() && Q === 4 && og(); }
     function WA(i) {
         tg += i, xh()
     }
@@ -21899,17 +21897,17 @@ void main(void) {
         if (!I.canShoot()) return;
         Eo = !1;
 
-        // تجاهل مكان النيشان الفعلي واختيار المركز (0, 0)
+        
         let o = new Jt.Vector2(0, 0); 
 
-        // تعويض الرياح لكي تكون النتيجة عند السيرفر هي المركز تماماً
+        
         let gs = I.getGameScale();
         o.x = -(I.windX * gs); 
         o.y = -(I.windY * gs);
 
         qf = I.scores[I.localSeat || 0];
 
-        // إرسال الضربة "المثالية" للسيرفر
+        
         I.localMove({
             t: 3,
             x: o.x,
