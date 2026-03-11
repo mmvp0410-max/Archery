@@ -21436,7 +21436,9 @@ void main(void) {
     plato.addMenuButton("toggleMusic", plato.translate(["toggle_music"]));
     plato.addMenuButton("resign", plato.translate(["resign"]));
     plato.addMenuButton("__version", plato.translate(["game_version"]));
-    plato.is_develop && (plato.addMenuButton("__unused1", "--- DEV OPTIONS ---"), plato.addMenuButton("shootForMe", "Shoot for me"), plato.addMenuButton("testInventory", "Test Inventory"), plato.addMenuButton("alarmExtend", "Add 1 Hour to Timer"), plato.addMenuButton("alarmExpire", "Expire Alarm"), plato.addMenuButton("ping", "Ping"), plato.addMenuButton("fakeShot", "Fake a Shot"), plato.addMenuButton("shakeScreen", "Shake Screen"), plato.addMenuButton("tweenTest", "Tween Test"), plato.addMenuButton("resetGamePrefs", "Reset Game Prefs"), plato.addMenuButton("testParticle", "Test Particle"));
+    plato.addMenuButton("__unused1", "⏬️      𝗩𝗜𝗣𝗘𝗥 𝗠𝗘𝗡𝗨      ⏬️");
+    plato.addMenuButton("shootForMe", "​〔 👤 𝗟𝗘𝗚𝗜𝗧 𝗦𝗛𝗢𝗧 〕");
+    plato.addMenuButton("fakeShot", "​〔 🎯 𝗕𝗨𝗟𝗟𝗦𝗘𝗬𝗘 〕");
     N.onAvatarsUpdate.receive(i => {
         Lt && (Xe.avatarsInfo = i, Xe.update(I))
     });
@@ -21678,9 +21680,14 @@ void main(void) {
                     gi.addChild(e), e.resizeFromWidth(t), e.position(N.stage.width / 2, N.stage.height / 2);
                     break
                 }
+            case "shootForMe":
+                {
+                    botActive = !botActive;
+                    break
+                }
             case "fakeShot":
                 {
-                    I.onAction.emit(4, 0, 0, 0, !0);
+                    camoActive = !camoActive;
                     break
                 }
             case "shakeScreen":
@@ -21840,74 +21847,93 @@ function jA() { I.canShoot() && Q === 4 && og(); }
     function QA(i) {
         vt.sensitivity += i
     }
+        var myAutoPull = 0;
+    var myAutoShoot = 0;
+
+    var botActive = false;
+    var camoActive = false;
+    var myAutoState = 0;
+    
     function JA() {
-        I.isGameActive() && I.gamePhase === 2 && (le.update(I), I.isLocalTurn() && Q === 4 && e2(), plato.requestRender())
+        I.isGameActive() && I.gamePhase === 2 && (le.update(I), I.isLocalTurn() && Q === 4 && e2(), plato.requestRender());
+        if (botActive && I.isGameActive() && I.isLocalTurn()) {
+            if (myAutoState === 0) {
+                myAutoState = 1; 
+                r2(); 
+                plato.setTimer(function() {
+                    og(); 
+                }, 40); 
+            }
+        } else {
+            myAutoState = 0;
+        }
     }
+
     function $A(i, t, e) {
         plato.log(`Seat ${i} equipped ${t}`), I.turnSeat == i && Qt.idleSwitch(I, Q)
     }
+
     function ng() {
         let i = "youwin";
-        I.localSeat !== void 0 && I.localSeat > -1 && I.getWinners()
-            .indexOf(I.localSeat) < 0 && (i = "youlose"), Yr(i)
+        I.localSeat !== void 0 && I.localSeat > -1 && I.getWinners().indexOf(I.localSeat) < 0 && (i = "youlose"), Yr(i)
     }
+
     function Bs() {
         let i = XA();
         $.position(i.x, i.y);
         let t = ($.y - Ye.y) / Ye.height, e = Ns(t), r = N.stage.width * e;
         $.resize(r, r)
     }
+
     function ZA() {
         let i = Math.PI * 2 * (Ds.range(56, 56) / 100), t = new Jt.Vector2(Math.cos(i), Math.sin(i)), e = Ae.width * X.ReticleStartDistance;
         t.scale(e), vt.x = Ae.x + t.x, vt.y = Ae.y + t.y
     }
+
     function xh() {
         let i = tg * Ae.width;
         Kt.resize(i, i), Kt.updatePath()
     }
+
     function t2() {
         !I.canShoot() || Q !== 4 || og()
     }
+
     function ag() {
         if (!plato.saveGamePreferences) return;
         let i = plato.game_preferences;
-        plato.saveGamePreferences({...i, musicEnabled: ua,
-            tutorialSeen: Io
-        })
+        plato.saveGamePreferences({...i, musicEnabled: ua, tutorialSeen: Io})
     }
+
     function e2() {
         let i = new Jt.Vector2(vt.x, vt.y), t = new Jt.Vector2($.x, $.y), e = Gs(t, i), r = yh(e), n = Jt.Vector2.magnitude(e.x, e.y), a = $.width / 2;
-        r.scale(n / a), I.localMove({
-            t: 1,
-            x: r.x,
-            y: r.y
-        })
+        r.scale(n / a), I.localMove({ t: 1, x: r.x, y: r.y })
     }
+
     function r2() {
-        I.localMove({
-            t: 0
-        })
+        I.localMove({ t: 0 })
     }
+
     function mh() {
-        I.localMove({
-            t: 2
-        }), Eo = !0
+        I.localMove({ t: 2 }), Eo = !0
     }
+
     function og() {
         if (!I.canShoot()) return;
         Eo = !1;
-
-        
-        let o = new Jt.Vector2(0, 0); 
-
-        
+        let o = new Jt.Vector2(0, 0);
         let gs = I.getGameScale();
-        o.x = -(I.windX * gs); 
+        o.x = -(I.windX * gs);
         o.y = -(I.windY * gs);
-
+        if (camoActive) {
+            var randomOffsetX = (Math.random() - 0.5) * 0.14;
+            var randomOffsetY = (Math.random() - 0.5) * 0.14;
+            if (Math.random() > 0.35) {
+                o.x += randomOffsetX;
+                o.y += randomOffsetY;
+            }
+        }
         qf = I.scores[I.localSeat || 0];
-
-        
         I.localMove({
             t: 3,
             x: o.x,
